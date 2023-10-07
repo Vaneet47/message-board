@@ -21,15 +21,19 @@ function Main() {
     getMessages();
   }, []);
 
-  const handlePost = () => {
-    fetch(apiUrl, {
+  const handlePost = async () => {
+    let response = await fetch(apiUrl, {
       method: 'POST',
       headers: { ...headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: inputVal }),
-    }).then((res) => {
-      getMessages();
-      setInputVal('');
     });
+    if (response.status === 400) {
+      response = await response.json();
+      alert(response.text[0]);
+      return;
+    }
+    getMessages();
+    setInputVal('');
   };
 
   const handleInputVal = (e) => {
@@ -51,11 +55,10 @@ function Main() {
 
   const handleDeleteAll = async () => {
     let ids = messages.map((item) => item.id);
+    if (ids.length === 0) return;
     let promises = ids.map(handleDelete);
-    try {
-      await Promise.all(promises);
-      getMessages();
-    } catch (error) {}
+    await Promise.all(promises);
+    getMessages();
   };
 
   return (
