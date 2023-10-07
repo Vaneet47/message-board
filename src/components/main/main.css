@@ -1,0 +1,71 @@
+.main {
+  padding-left: 4rem;
+  padding-right: 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cta-container {
+  height: 2.3rem;
+}
+
+.cta {
+  margin-right: 1rem;
+}
+
+.btn {
+  padding: 1px 4px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.delete {
+  color: red;
+  font-weight: bold;
+}
+
+.msg {
+  border-top: 1px dotted black;
+  padding: 1rem 0;
+}
+
+.msg-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.msg-info > * {
+  height: 20px;
+}
+
+.msg-content {
+  padding-left: 3rem;
+  color: gray;
+  font-weight: 600;
+}
+
+.icon {
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.src,
+.time {
+  font-weight: 600;
+}
+.time {
+  color: gray;
+}
+
+.delete-btn {
+  border: none;
+  color: blue;
+  background-color: white;
+  margin-left: 1rem;
+  font-size: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+}

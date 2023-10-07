@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  height: 6rem;
+  flex-direction: column;
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 24px;
+  height: 3rem;
+  margin-top: 1rem;
+}
+
+.para {
+  color: gray;
+  font-weight: 600;
+}
