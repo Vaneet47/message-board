@@ -5,7 +5,7 @@ function Message() {
   return (
     <div className='msg'>
       <div className='msg-info'>
-        <span class='material-symbols-rounded icon'>sms</span>
+        <span className='material-symbols-rounded icon'>sms</span>
         <p className='src'>~anonymous</p>
         &nbsp;
         <p className='time'>-</p>
