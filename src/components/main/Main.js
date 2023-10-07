@@ -9,12 +9,17 @@ function Main() {
   const [inputVal, setInputVal] = useState('');
   const [messages, setMessages] = useState([]);
 
-  const getMessages = () => {
-    fetch(apiUrl, {
+  const [popup, setPopup] = useState(false);
+  const [loaderHidden, setLoaderHidden] = useState(true);
+
+  const getMessages = async () => {
+    setLoaderHidden(false);
+    let res = await fetch(apiUrl, {
       headers: headers,
-    })
-      .then((res) => res.json())
-      .then((result) => setMessages(result));
+    });
+    res = await res.json();
+    setLoaderHidden(true);
+    setMessages(res);
   };
 
   useEffect(() => {
@@ -22,16 +27,15 @@ function Main() {
   }, []);
 
   const handlePost = async () => {
+    if (!inputVal.trim().length) return;
+    setLoaderHidden(false);
     let response = await fetch(apiUrl, {
       method: 'POST',
       headers: { ...headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: inputVal }),
     });
-    if (response.status === 400) {
-      response = await response.json();
-      alert(response.text[0]);
-      return;
-    }
+    await response.json();
+    setLoaderHidden(true);
     getMessages();
     setInputVal('');
   };
@@ -41,8 +45,12 @@ function Main() {
   };
 
   const deleteMessage = (id) => {
+    setLoaderHidden(false);
     const result = handleDelete(id);
-    result.then(() => getMessages());
+    result.then(() => {
+      setLoaderHidden(true);
+      getMessages();
+    });
   };
 
   const handleDelete = async (id) => {
@@ -56,9 +64,20 @@ function Main() {
   const handleDeleteAll = async () => {
     let ids = messages.map((item) => item.id);
     if (ids.length === 0) return;
+    setLoaderHidden(false);
     let promises = ids.map(handleDelete);
     await Promise.all(promises);
+    setLoaderHidden(true);
     getMessages();
+  };
+
+  const closePopup = () => {
+    setPopup(false);
+  };
+
+  const handleYes = () => {
+    setPopup(false);
+    handleDeleteAll();
   };
 
   return (
@@ -68,7 +87,14 @@ function Main() {
         <button className='cta btn' onClick={handlePost}>
           Post!
         </button>
-        <button className='cta btn delete' onClick={handleDeleteAll}>
+        <button
+          className='cta btn delete'
+          onClick={() => {
+            let ids = messages.map((item) => item.id);
+            if (ids.length === 0) return;
+            setPopup(true);
+          }}
+        >
           Delete All
         </button>
       </div>
@@ -100,6 +126,32 @@ function Main() {
           );
         })}
       </div>
+
+      <div className='loader' hidden={loaderHidden}>
+        <img src='loader.svg' alt='loading' />
+      </div>
+
+      {popup && (
+        <div className='cross-popup'>
+          <div className='popup-content'>
+            <span className='close-button' onClick={closePopup}>
+              &times;
+            </span>
+            <h2 className='dialog-title'>Disclaimer</h2>
+
+            <p className='dialog-question'>Are you sure to delete them all?</p>
+
+            <div className='buttons-container'>
+              <button className='buttons' onClick={closePopup}>
+                No
+              </button>
+              <button className='buttons' onClick={handleYes}>
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
