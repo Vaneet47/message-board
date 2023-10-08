@@ -131,3 +131,12 @@
   border-radius: 50%;
   width: 2rem;
 }
+
+button{
+  cursor: pointer;
+}
+
+.backg{
+  background-color: lightgray;
+  color: gray;
+}

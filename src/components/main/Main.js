@@ -36,6 +36,9 @@ function Main() {
   const startIndex = (currentPage - 1) * messagesPerPage;
   const endIndex = startIndex + messagesPerPage;
   let currentItems = handleSort(order, messages).slice(startIndex, endIndex);
+  if (currentItems.length === 0 && messages.length !== 0) {
+    setCurrentPage((prev) => prev - 1);
+  }
 
   const getMessages = async () => {
     setLoaderHidden(false);
@@ -186,7 +189,7 @@ function Main() {
           >
             Sort by Timestamp
           </button>
-          <p className='order-info'>Currently {order}</p>
+          <p className={`order-info ${messages.length === 0? 'backg':''}`}>Currently {order}</p>
         </div>
 
         <div className='msg-conatiner'>
