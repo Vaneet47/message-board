@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './main.css';
 import moment from 'moment';
+import DialogBox from '../dialogBox/DialogBox';
 
 const apiUrl = 'https://mapi.harmoney.dev/api/v1/messages/';
 const headers = { Authorization: '0LZER559TVedxahu' };
@@ -8,8 +9,10 @@ const headers = { Authorization: '0LZER559TVedxahu' };
 function Main() {
   const [inputVal, setInputVal] = useState('');
   const [messages, setMessages] = useState([]);
+  const [checkedMsgs, setCheckedMsgs] = useState([]);
 
   const [popup, setPopup] = useState(false);
+  const [popupSelected, setPopupSelected] = useState(false);
   const [loaderHidden, setLoaderHidden] = useState(true);
 
   const getMessages = async () => {
@@ -19,6 +22,7 @@ function Main() {
     });
     res = await res.json();
     setLoaderHidden(true);
+    res.sort((x, y) => new Date(y.timestamp) - new Date(x.timestamp));
     setMessages(res);
   };
 
@@ -61,8 +65,12 @@ function Main() {
     return res;
   };
 
-  const handleDeleteAll = async () => {
+  const handleDeleteMultiple = async (selected) => {
     let ids = messages.map((item) => item.id);
+    if (selected) {
+      ids = checkedMsgs;
+      setCheckedMsgs([]);
+    }
     if (ids.length === 0) return;
     setLoaderHidden(false);
     let promises = ids.map(handleDelete);
@@ -74,17 +82,40 @@ function Main() {
   const closePopup = () => {
     setPopup(false);
   };
+  const closePopupSelected = () => {
+    setPopupSelected(false);
+  };
 
-  const handleYes = () => {
+  const handleDeleteAll = () => {
     setPopup(false);
-    handleDeleteAll();
+    handleDeleteMultiple();
+  };
+
+  const handleDeleteSelected = () => {
+    setPopupSelected(false);
+    handleDeleteMultiple('selected');
+  };
+
+  const handleChecked = (id, e) => {
+    if (e.target.checked) {
+      let checkedM = [...checkedMsgs];
+      checkedM.push(id);
+      setCheckedMsgs(checkedM);
+    } else {
+      let checkedM = checkedMsgs.filter((item) => item !== id);
+      setCheckedMsgs(checkedM);
+    }
   };
 
   return (
     <div className='main'>
       <div className='cta-container'>
         <input className='cta' value={inputVal} onChange={handleInputVal} />
-        <button className='cta btn' onClick={handlePost}>
+        <button
+          className='cta btn'
+          onClick={handlePost}
+          disabled={inputVal.trim().length === 0}
+        >
           Post!
         </button>
         <button
@@ -94,8 +125,20 @@ function Main() {
             if (ids.length === 0) return;
             setPopup(true);
           }}
+          disabled={messages.length === 0}
         >
           Delete All
+        </button>
+        <button
+          className='cta btn delete'
+          onClick={() => {
+            let ids = messages.map((item) => item.id);
+            if (ids.length === 0) return;
+            setPopupSelected(true);
+          }}
+          disabled={checkedMsgs.length === 0}
+        >
+          Delete Selected
         </button>
       </div>
 
@@ -104,6 +147,14 @@ function Main() {
           return (
             <div className='msg' key={index}>
               <div className='msg-info'>
+                <input
+                  type='checkbox'
+                  id={index}
+                  onChange={(e) => {
+                    handleChecked(item.id, e);
+                  }}
+                  checked={checkedMsgs.includes(item.id)}
+                />
                 <span className='material-symbols-rounded icon'>sms</span>
                 <p className='src'>{item.source}</p>
                 &nbsp;
@@ -132,25 +183,18 @@ function Main() {
       </div>
 
       {popup && (
-        <div className='cross-popup'>
-          <div className='popup-content'>
-            <span className='close-button' onClick={closePopup}>
-              &times;
-            </span>
-            <h2 className='dialog-title'>Disclaimer</h2>
-
-            <p className='dialog-question'>Are you sure to delete them all?</p>
-
-            <div className='buttons-container'>
-              <button className='buttons' onClick={closePopup}>
-                No
-              </button>
-              <button className='buttons' onClick={handleYes}>
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
+        <DialogBox
+          closePopup={closePopup}
+          handleDeleteAll={handleDeleteAll}
+          message={'Are you sure to delete them all?'}
+        />
+      )}
+      {popupSelected && (
+        <DialogBox
+          closePopup={closePopupSelected}
+          handleDeleteAll={handleDeleteSelected}
+          message={'Are you sure to delete all the selected messages?'}
+        />
       )}
     </div>
   );
