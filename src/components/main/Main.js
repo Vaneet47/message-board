@@ -12,6 +12,7 @@ function Main() {
   const [checkedMsgs, setCheckedMsgs] = useState([]);
 
   const [popup, setPopup] = useState(false);
+  const [order, setOrder] = useState('oldest first');
   const [popupSelected, setPopupSelected] = useState(false);
   const [loaderHidden, setLoaderHidden] = useState(true);
 
@@ -22,7 +23,12 @@ function Main() {
     });
     res = await res.json();
     setLoaderHidden(true);
-    res.sort((x, y) => new Date(y.timestamp) - new Date(x.timestamp));
+    if (order === 'oldest first') {
+      res = res.sort((x, y) => new Date(x.timestamp) - new Date(y.timestamp));
+    } else {
+      res = res.sort((x, y) => new Date(y.timestamp) - new Date(x.timestamp));
+    }
+
     setMessages(res);
   };
 
@@ -53,6 +59,8 @@ function Main() {
     const result = handleDelete(id);
     result.then(() => {
       setLoaderHidden(true);
+      let checkedM = checkedMsgs.filter((item) => item !== id);
+      setCheckedMsgs(checkedM);
       getMessages();
     });
   };
@@ -107,6 +115,22 @@ function Main() {
     }
   };
 
+  const handleSort = () => {
+    let newMsgs;
+    if (order === 'oldest first') {
+      newMsgs = messages.sort(
+        (x, y) => new Date(y.timestamp) - new Date(x.timestamp)
+      );
+      setOrder('most recent first');
+    } else {
+      newMsgs = messages.sort(
+        (x, y) => new Date(x.timestamp) - new Date(y.timestamp)
+      );
+      setOrder('oldest first');
+    }
+    setMessages(newMsgs);
+  };
+
   return (
     <div className='main'>
       <div className='cta-container'>
@@ -139,6 +163,15 @@ function Main() {
           disabled={checkedMsgs.length === 0}
         >
           Delete Selected
+        </button>
+        <button
+          className='cta btn sort'
+          onClick={() => {
+            handleSort();
+          }}
+          disabled={messages.length === 0}
+        >
+          {`Sort (currently ${order})`}
         </button>
       </div>
 
