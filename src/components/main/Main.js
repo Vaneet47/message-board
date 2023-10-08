@@ -189,7 +189,7 @@ function Main() {
           >
             Sort by Timestamp
           </button>
-          <p className={`order-info ${messages.length === 0? 'backg':''}`}>Currently {order}</p>
+          <p className={`order-info ${messages.length === 0? 'backg':''}`}>Current order: {order}</p>
         </div>
 
         <div className='msg-conatiner'>
