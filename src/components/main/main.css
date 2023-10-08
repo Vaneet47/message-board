@@ -3,10 +3,11 @@
   padding-right: 4rem;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 10rem);
 }
 
 .cta-container {
-  height: 2.3rem;
+  margin-bottom: 1.3rem;
 }
 
 .cta {
@@ -27,6 +28,10 @@
 
 .delete:disabled {
   color: rgba(16, 16, 16, 0.3);
+}
+
+.msg-conatiner {
+  padding-bottom: 3rem;
 }
 
 .msg {
@@ -79,6 +84,7 @@
   position: fixed;
   top: 0;
   bottom: 0;
+  z-index: 1;
   left: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.8);
@@ -93,4 +99,26 @@
 
 .sort {
   width: 20rem;
+}
+
+.pagination {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  background-color: lightgray;
+  height: 2rem;
+  width: calc(100% - 8rem);
+  left: 4rem;
+  border-radius: 10px;
+}
+
+.active {
+  background: #eccc68;
+}
+
+.page-btn {
+  height: 2rem;
+  border-radius: 50%;
+  width: 2rem;
 }
