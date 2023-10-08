@@ -8,6 +8,8 @@
 
 .cta-container {
   margin-bottom: 1.3rem;
+  display: flex;
+  align-items: center;
 }
 
 .cta {
@@ -98,7 +100,14 @@
 }
 
 .sort {
-  width: 20rem;
+  width: 8rem;
+}
+
+.order-info {
+  background-color: lightblue;
+  border: 1px solid;
+  padding: 1px 3px;
+  font-size: 15px;
 }
 
 .pagination {

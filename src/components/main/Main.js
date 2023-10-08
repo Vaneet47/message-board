@@ -184,8 +184,9 @@ function Main() {
             }}
             disabled={messages.length === 0}
           >
-            {`Change sort order? - currently ${order}`}
+            Sort by Timestamp
           </button>
+          <p className='order-info'>Currently {order}</p>
         </div>
 
         <div className='msg-conatiner'>
@@ -243,7 +244,7 @@ function Main() {
             message={'Are you sure to delete all the selected messages?'}
           />
         )}
-        
+
         <Pagination
           currentPage={currentPage}
           totalPages={Math.ceil(messages.length / messagesPerPage)}
