@@ -211,7 +211,7 @@ function Main() {
                   <p className='time'>-</p>
                   &nbsp;
                   <p className='time'>
-                    {moment(item.timestamp).format('hh:mm:ss a')}
+                    {moment(item.timestamp).format('hh:mm:ss a, DD/MM/YYYY')}
                   </p>
                   <button
                     className='delete-btn'
